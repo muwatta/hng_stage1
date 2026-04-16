@@ -12,6 +12,7 @@ from django.core.management import call_command
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hng_stage1.settings')
 
 application = get_wsgi_application()
+app = application
 
 if os.environ.get('VERCEL'):
     try:
