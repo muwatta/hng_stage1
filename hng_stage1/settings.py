@@ -81,8 +81,9 @@ DATABASES = {
     }
 }
 
-if os.environ.get('VERCEL'):
-    DATABASES['default']['NAME'] = Path('/tmp/db.sqlite3')
+if os.environ.get('VERCEL') or os.environ.get('VERCEL_ENV'):
+    Path('/tmp').mkdir(parents=True, exist_ok=True)
+    DATABASES['default']['NAME'] = '/tmp/db.sqlite3'
 
 
 # Password validation

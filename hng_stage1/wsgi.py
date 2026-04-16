@@ -14,8 +14,9 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hng_stage1.settings')
 application = get_wsgi_application()
 app = application
 
-if os.environ.get('VERCEL'):
+if os.environ.get('VERCEL') or os.environ.get('VERCEL_ENV'):
     try:
         call_command('migrate', '--noinput')
-    except Exception:
-        pass
+    except Exception as exc:
+        import sys
+        print(f"[VERCEL MIGRATE ERROR] {exc}", file=sys.stderr)
