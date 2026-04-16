@@ -8,6 +8,7 @@ sys.path.insert(0, str(ROOT_DIR))
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hng_stage1.settings')
 
-from hng_stage1.wsgi import application
+from django.core.wsgi import get_wsgi_application
 
+application = get_wsgi_application()
 app = application
