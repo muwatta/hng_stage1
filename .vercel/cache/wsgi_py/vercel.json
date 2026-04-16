@@ -1,7 +1,7 @@
 {
   "builds": [
     {
-      "src": "wsgi.py",
+      "src": "hng_stage1/wsgi.py",
       "use": "@vercel/python",
       "config": {
         "maxLambdaSize": "15mb",
@@ -12,7 +12,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "wsgi.py"
+      "dest": "hng_stage1/wsgi.py"
     }
   ]
 }
