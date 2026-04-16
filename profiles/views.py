@@ -32,8 +32,8 @@ class ProfileListCreateView(APIView):
 
     def post(self, request):
         # Create a new profile
-        name = request.data.get('name', '').strip()
-        if not name:
+        name = request.data.get('name', None)
+        if name is None or (isinstance(name, str) and name.strip() == ""):
             return Response(
                 {"status": "error", "message": "Missing or empty name"},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -45,6 +45,7 @@ class ProfileListCreateView(APIView):
                 status=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 headers={"Access-Control-Allow-Origin": "*"}
             )
+        name = name.strip()
         # Check existing
         existing = Profile.objects.filter(name__iexact=name).first()
         if existing:

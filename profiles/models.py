@@ -2,7 +2,7 @@ import uuid
 from django.db import models
 
 class Profile(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  
+    id = models.UUIDField(primary_key=True, default=uuid.uuid7, editable=False)  
     name = models.CharField(max_length=100, unique=True)
     gender = models.CharField(max_length=10)
     gender_probability = models.FloatField()

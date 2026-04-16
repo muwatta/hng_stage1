@@ -1,9 +1,13 @@
 import requests
+from rest_framework import status
 from rest_framework.exceptions import APIException
 
 GENDERIZE_URL = "https://api.genderize.io"
 AGIFY_URL = "https://api.agify.io"
 NATIONALIZE_URL = "https://api.nationalize.io"
+
+class ExternalAPIException(APIException):
+    status_code = status.HTTP_502_BAD_GATEWAY
 
 def fetch_gender(name):
     try:
@@ -11,9 +15,9 @@ def fetch_gender(name):
         resp.raise_for_status()
         data = resp.json()
     except Exception:
-        raise APIException(detail="Genderize returned an invalid response", code=502)
+        raise ExternalAPIException(detail="Genderize returned an invalid response")
     if data.get('gender') is None or data.get('count', 0) == 0:
-        raise APIException(detail="Genderize returned an invalid response", code=502)
+        raise ExternalAPIException(detail="Genderize returned an invalid response")
     return {
         'gender': data['gender'],
         'gender_probability': data['probability'],
@@ -26,9 +30,9 @@ def fetch_age(name):
         resp.raise_for_status()
         data = resp.json()
     except Exception:
-        raise APIException(detail="Agify returned an invalid response", code=502)
+        raise ExternalAPIException(detail="Agify returned an invalid response")
     if data.get('age') is None:
-        raise APIException(detail="Agify returned an invalid response", code=502)
+        raise ExternalAPIException(detail="Agify returned an invalid response")
     age = data['age']
     if age <= 12:
         age_group = "child"
@@ -46,10 +50,10 @@ def fetch_nationality(name):
         resp.raise_for_status()
         data = resp.json()
     except Exception:
-        raise APIException(detail="Nationalize returned an invalid response", code=502)
+        raise ExternalAPIException(detail="Nationalize returned an invalid response")
     country_list = data.get('country', [])
     if not country_list:
-        raise APIException(detail="Nationalize returned an invalid response", code=502)
+        raise ExternalAPIException(detail="Nationalize returned an invalid response")
     best = max(country_list, key=lambda x: x['probability'])
     return {
         'country_id': best['country_id'],

@@ -7,12 +7,12 @@ Built for **HNG Internship Stage 1** – Backend Track.
 
 Base URL: `https://hngstage1-zeta.vercel.app`
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST   | `/api/profiles` | Create a new profile (idempotent – returns existing if name already stored) |
-| GET    | `/api/profiles` | List all profiles (supports filtering) |
-| GET    | `/api/profiles/{id}` | Retrieve a single profile by UUID |
-| DELETE | `/api/profiles/{id}` | Delete a profile |
+| Method | Endpoint             | Description                                                                 |
+| ------ | -------------------- | --------------------------------------------------------------------------- |
+| POST   | `/api/profiles`      | Create a new profile (idempotent – returns existing if name already stored) |
+| GET    | `/api/profiles`      | List all profiles (supports filtering)                                      |
+| GET    | `/api/profiles/{id}` | Retrieve a single profile by UUID                                           |
+| DELETE | `/api/profiles/{id}` | Delete a profile                                                            |
 
 ### Filtering (GET `/api/profiles`)
 
@@ -93,12 +93,12 @@ All errors follow:
 }
 ```
 
-| Status Code | Description |
-|-------------|-------------|
-| 400 | Missing or empty `name` |
-| 422 | Invalid type (name not a string) |
-| 404 | Profile not found |
-| 502 | Upstream API failure (Genderize, Agify, or Nationalize returned invalid response) |
+| Status Code | Description                                                                       |
+| ----------- | --------------------------------------------------------------------------------- |
+| 400         | Missing or empty `name`                                                           |
+| 422         | Invalid type (name not a string)                                                  |
+| 404         | Profile not found                                                                 |
+| 502         | Upstream API failure (Genderize, Agify, or Nationalize returned invalid response) |
 
 ## 🛠️ Tech Stack
 
@@ -111,35 +111,40 @@ All errors follow:
 
 ## 📦 Local Setup
 
-1. Clone the repository  
+1. Clone the repository
+
    ```bash
    git clone https://github.com/muwatta/hng_stage1.git
    cd hng_stage1
    ```
 
-2. Create and activate virtual environment  
+2. Create and activate virtual environment
+
    ```bash
    python -m venv venv
    source venv/bin/activate      # Linux/Mac
    venv\Scripts\activate          # Windows
    ```
 
-3. Install dependencies  
+3. Install dependencies
+
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Run migrations  
+4. Run migrations
+
    ```bash
    python manage.py migrate
    ```
 
-5. Start development server  
+5. Start development server
+
    ```bash
    python manage.py runserver
    ```
 
-6. Test the API  
+6. Test the API
    ```bash
    curl -X POST http://127.0.0.1:8000/api/profiles -H "Content-Type: application/json" -d '{"name":"ella"}'
    ```
@@ -156,12 +161,12 @@ CORS enabled (`Access-Control-Allow-Origin: *`) for grading compatibility.
 - Age group classification: child (0-12), teenager (13-19), adult (20-59), senior (60+).
 - Country selection: highest probability from Nationalize.io.
 - Full CRUD + filtering.
-- UUID v4 primary keys (compatible with grader).
+- UUID v7 primary keys (compatible with grader).
 - All timestamps in UTC ISO 8601.
 
 ## 📝 HNG Submission
 
-- **Pass mark**: 75/100  
+- **Pass mark**: 75/100
 - **Deadline**: 17th April 2026, 11:59pm WAT
 
 ## 📄 License
