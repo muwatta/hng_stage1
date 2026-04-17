@@ -2,8 +2,6 @@ import os
 import sys
 from pathlib import Path
 
-# Ensure the Django project package is importable when this file is executed
-# as a Vercel Serverless Function from inside the package directory.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from django.core.wsgi import get_wsgi_application
