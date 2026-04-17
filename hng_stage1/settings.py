@@ -71,8 +71,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'hng_stage1.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -85,9 +83,6 @@ if os.environ.get('VERCEL') or os.environ.get('VERCEL_ENV'):
     Path('/tmp').mkdir(parents=True, exist_ok=True)
     DATABASES['default']['NAME'] = '/tmp/db.sqlite3'
 
-
-# Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {

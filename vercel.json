@@ -1,4 +1,8 @@
 {
-  "builds": [{ "src": "hng_stage1/wsgi.py", "use": "@vercel/python" }],
-  "routes": [{ "src": "/(.*)", "dest": "hng_stage1/wsgi.py" }]
+  "builds": [
+    { "src": "hng_stage1/wsgi.py", "use": "@vercel/python" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "hng_stage1/wsgi.py" }
+  ]
 }
