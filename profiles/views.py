@@ -31,55 +31,77 @@ class ProfileListCreateView(APIView):
         )
 
     def post(self, request):
-        # Create a new profile
-        name = request.data.get('name', None)
-        if name is None or (isinstance(name, str) and name.strip() == ""):
-            return Response(
-                {"status": "error", "message": "Missing or empty name"},
-                status=status.HTTP_400_BAD_REQUEST,
-                headers={"Access-Control-Allow-Origin": "*"}
-            )
-        if not isinstance(name, str):
-            return Response(
-                {"status": "error", "message": "Invalid type"},
-                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                headers={"Access-Control-Allow-Origin": "*"}
-            )
-        name = name.strip()
-        # Check existing
-        existing = Profile.objects.filter(name__iexact=name).first()
-        if existing:
-            serializer = ProfileSerializer(existing)
-            return Response(
-                {
-                    "status": "success",
-                    "message": "Profile already exists",
-                    "data": serializer.data
-                },
-                status=status.HTTP_200_OK,
-                headers={"Access-Control-Allow-Origin": "*"}
-            )
         try:
-            data = get_name_data(name)
-        except APIException as e:
+            name = request.data.get('name')
+
+            if not name or not isinstance(name, str):
+                return Response(
+                    {"status": "error", "message": "Invalid name"},
+                    status=400
+                )
+
+            name = name.strip()
+
+            existing = Profile.objects.filter(name__iexact=name).first()
+            if existing:
+                return Response(
+                    {
+                        "status": "success",
+                        "message": "Profile already exists",
+                        "data": ProfileSerializer(existing).data
+                    },
+                    status=200
+                )
+
+            # 🔥 Fetch external data
+            try:
+                data = get_name_data(name)
+            except Exception as e:
+                print("API ERROR:", str(e))
+                return Response(
+                    {"status": "error", "message": "External API failed"},
+                    status=502
+                )
+
+            # 🔥 Normalize data (CRITICAL FIX)
+            age = data.get("age") if data.get("age") is not None else 0
+            payload = {
+                "name": name,
+                "gender": data.get("gender") or "unknown",
+                "gender_probability": data.get("gender_probability") or 0.0,
+                "sample_size": data.get("sample_size") or 0,
+                "age": age,
+                "age_group": (
+                    "child" if age < 18 else
+                    "adult" if age < 60 else
+                    "elder"
+                ),
+                "country_id": data.get("country_id") or "N/A",
+                "country_probability": data.get("country_probability") or 0.0,
+            }
+
+            serializer = ProfileSerializer(data=payload)
+
+            if not serializer.is_valid():
+                print("SERIALIZER ERROR:", serializer.errors)
+                return Response(
+                    {"status": "error", "errors": serializer.errors},
+                    status=400
+                )
+
+            profile = serializer.save()
+
             return Response(
-                {"status": "error", "message": e.detail},
-                status=e.status_code,
-                headers={"Access-Control-Allow-Origin": "*"}
+                {"status": "success", "data": ProfileSerializer(profile).data},
+                status=201
             )
-        except Exception:
+
+        except Exception as e:
+            print("CRITICAL ERROR:", str(e))
             return Response(
-                {"status": "error", "message": "Upstream or server failure"},
-                status=status.HTTP_502_BAD_GATEWAY,
-                headers={"Access-Control-Allow-Origin": "*"}
+                {"status": "error", "message": "Server error"},
+                status=500
             )
-        profile = Profile.objects.create(name=name, **data)
-        serializer = ProfileSerializer(profile)
-        return Response(
-            {"status": "success", "data": serializer.data},
-            status=status.HTTP_201_CREATED,
-            headers={"Access-Control-Allow-Origin": "*"}
-        )
 
 class ProfileDetailView(APIView):
     def get(self, request, id):
