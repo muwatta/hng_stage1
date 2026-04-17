@@ -1,8 +1,15 @@
 {
   "builds": [
-    { "src": "hng_stage1/wsgi.py", "use": "@vercel/python" }
+    {
+      "src": "hng_stage1/wsgi.py",
+      "use": "@vercel/python"
+    }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "hng_stage1/wsgi.py" }
-  ]
+    {
+      "src": "/(.*)",
+      "dest": "hng_stage1/wsgi.py"
+    }
+  ],
+  "buildCommand": "python manage.py migrate --no-input"
 }
